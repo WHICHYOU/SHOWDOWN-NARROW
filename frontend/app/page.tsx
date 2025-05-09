@@ -1,8 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
+interface Showdown {
+  id: string;
+  left: string;
+  right: string;
+  category?: string;
+}
+
 const LandingPage = () => {
-  const [showdowns, setShowdowns] = useState<any[]>([]);
+  const [showdowns, setShowdowns] = useState<Showdown[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -12,10 +19,8 @@ const LandingPage = () => {
           process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
         const response = await fetch(`${baseUrl}/showdowns`);
         const data = await response.json();
-
-        // Filter to only "Technology" category
         const techShowdowns = data.filter(
-          (s: any) => s.category === "Technology"
+          (item: Showdown) => item.category?.toLowerCase() === "technology"
         );
         setShowdowns(techShowdowns);
       } catch (error) {
