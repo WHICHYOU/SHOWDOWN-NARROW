@@ -1,12 +1,10 @@
-// Mock Data. Real code commented out below.
-
 "use client";
 
 import React, { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 
 interface Showdown {
-  id: number;
+  id: string;
   left: string;
   right: string;
   category: string;
@@ -15,33 +13,58 @@ interface Showdown {
 const VoteHistoryPage = () => {
   const { toast } = useToast();
   const [votes, setVotes] = useState<Showdown[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:8000/technology_showdowns")
-      .then((res) => res.json())
-      .then((data: Showdown[]) => {
-        setVotes(data.slice(0, 5)); // Simulate a vote history of 5 items
+    const fetchVotes = async () => {
+      try {
+        const baseUrl =
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+        const response = await fetch(`${baseUrl}/showdowns`);
+        const data: Showdown[] = await response.json();
+
+        const techVotes = data
+          .filter((v) => v.category === "Technology")
+          .slice(0, 5);
+
+        setVotes(techVotes);
+
         toast({
-          title: "Loaded mock vote history",
-          description: `Showing ${data.slice(0, 5).length} recent items.`,
+          title: "Vote history loaded",
+          description: `Showing ${techVotes.length} recent Technology showdowns.`,
         });
-      });
+      } catch (error) {
+        console.error("Failed to fetch votes", error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch vote history.",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVotes();
   }, [toast]);
 
   return (
     <div className="p-6">
       <h1 className="text-xl font-bold mb-4">Your Vote History</h1>
-      <ul className="space-y-2">
-        {votes.map((v) => (
-          <li key={v.id}>
-            <span className="font-medium">{v.left}</span> &gt;{" "}
-            <span className="font-medium">{v.right}</span>{" "}
-            <span className="text-sm text-muted-foreground">
-              ({v.category})
-            </span>
-          </li>
-        ))}
-      </ul>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <ul className="space-y-2">
+          {votes.map((v) => (
+            <li key={v.id}>
+              <span className="font-medium">{v.left}</span> &gt;{" "}
+              <span className="font-medium">{v.right}</span>{" "}
+              <span className="text-sm text-muted-foreground">
+                ({v.category})
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
