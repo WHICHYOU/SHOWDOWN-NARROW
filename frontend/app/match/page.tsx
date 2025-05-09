@@ -1,12 +1,10 @@
-// Mocd Data. Real codes commented out.
-
 "use client";
 
 import { useEffect, useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 interface Showdown {
-  id: number;
+  id: string;
   left: string;
   right: string;
   category: string;
@@ -14,24 +12,36 @@ interface Showdown {
 
 export default function MatchScores() {
   const [matches, setMatches] = useState<Showdown[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate taste match aggregation by merging mock categories
-    const endpoints = [
-      "technology_showdowns",
-      "food_beverage_showdowns",
-      "entertainment_showdowns",
-      "fashion_lifestyle_showdowns",
-      "travel_adventure_showdowns",
-    ];
+    const fetchMatches = async () => {
+      try {
+        const baseUrl =
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+        const response = await fetch(`${baseUrl}/showdowns`);
+        const data: Showdown[] = await response.json();
 
-    Promise.all(
-      endpoints.map((endpoint) =>
-        fetch(`http://localhost:8000/${endpoint}`).then((res) => res.json())
-      )
-    )
-      .then((all) => all.flat())
-      .then(setMatches);
+        const validCategories = [
+          "Technology",
+          "Food Beverage",
+          "Entertainment",
+          "Fashion Lifestyle",
+          "Travel Adventure",
+        ];
+
+        const filtered = data.filter((d) =>
+          validCategories.includes(d.category)
+        );
+        setMatches(filtered);
+      } catch (err) {
+        console.error("Match fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMatches();
   }, []);
 
   return (
@@ -41,17 +51,21 @@ export default function MatchScores() {
           <CardTitle>Top Taste Matches</CardTitle>
         </CardHeader>
         <CardContent>
-          <ul className="space-y-2">
-            {matches.map((item) => (
-              <li key={item.id}>
-                <span className="font-semibold">{item.left}</span> vs{" "}
-                <span className="font-semibold">{item.right}</span> —{" "}
-                <span className="text-sm text-muted-foreground">
-                  {item.category}
-                </span>
-              </li>
-            ))}
-          </ul>
+          {loading ? (
+            <p>Loading...</p>
+          ) : (
+            <ul className="space-y-2">
+              {matches.map((item, idx) => (
+                <li key={`${item.left}-${item.right}-${idx}`}>
+                  <span className="font-semibold">{item.left}</span> vs{" "}
+                  <span className="font-semibold">{item.right}</span> —{" "}
+                  <span className="text-sm text-muted-foreground">
+                    {item.category}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
         </CardContent>
       </Card>
     </div>

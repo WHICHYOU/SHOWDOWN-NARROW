@@ -20,9 +20,7 @@ const ComparePage = () => {
         const response = await fetch(`${baseUrl}/showdowns`);
         const data: Showdown[] = await response.json();
 
-        const techShowdowns = data.filter((s) => s.category === "Technology");
-
-        setShowdowns(techShowdowns);
+        setShowdowns(data.filter((s) => s.category === "Technology"));
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -33,23 +31,20 @@ const ComparePage = () => {
     fetchShowdowns();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="p-6">
-        <h1 className="text-xl font-bold">Loading Compare Profiles...</h1>
-      </div>
-    );
-  }
-
   return (
     <div className="p-6">
       <h1 className="text-xl font-bold mb-4">Compare Profiles</h1>
-      <div className="space-y-4">
-        {showdowns.length === 0 ? (
-          <p>No showdowns available.</p>
-        ) : (
-          showdowns.map((showdown) => (
-            <div key={showdown.id} className="border-b pb-4">
+      {loading ? (
+        <p>Loading Compare Profiles...</p>
+      ) : showdowns.length === 0 ? (
+        <p>No showdowns available.</p>
+      ) : (
+        <div className="space-y-4">
+          {showdowns.map((showdown, idx) => (
+            <div
+              key={`${showdown.left}-${showdown.right}-${idx}`}
+              className="border-b pb-4"
+            >
               <h2 className="font-semibold">
                 {showdown.left} vs {showdown.right}
               </h2>
@@ -57,9 +52,9 @@ const ComparePage = () => {
                 {showdown.category || "General"}
               </p>
             </div>
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
