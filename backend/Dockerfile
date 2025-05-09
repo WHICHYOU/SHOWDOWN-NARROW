@@ -1,22 +1,22 @@
-# Use a secure, updated base image
-FROM python:3.11-slim-bullseye
+# ✅ Use a secure, slim Python base image
+FROM python:3.11.8-slim-bookworm
 
-# Disable bytecode generation & enable real-time output
+# ✅ Prevent .pyc files and ensure unbuffered output
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Set work directory
+# ✅ Set working directory
 WORKDIR /app
 
-# Install dependencies
-COPY requirements.txt .
+# ✅ Install dependencies separately to leverage Docker layer caching
+COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy all backend code
-COPY . .
+# ✅ Copy all application code
+COPY . /app/
 
-# Expose port (for FastAPI)
+# ✅ Expose the application port
 EXPOSE 8000
 
-# Start the FastAPI server
+# ✅ Start FastAPI app using uvicorn
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
