@@ -10,9 +10,14 @@ const LandingPage = () => {
       try {
         const baseUrl =
           process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-        const response = await fetch(`${baseUrl}/technology_showdowns`);
+        const response = await fetch(`${baseUrl}/showdowns`);
         const data = await response.json();
-        setShowdowns(data);
+
+        // Filter to only "Technology" category
+        const techShowdowns = data.filter(
+          (s: any) => s.category === "Technology"
+        );
+        setShowdowns(techShowdowns);
       } catch (error) {
         console.error("Error fetching showdowns:", error);
       } finally {
