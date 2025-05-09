@@ -1,29 +1,28 @@
-// Mock data. Real page commented out.
-
 "use client";
 import React, { useEffect, useState } from "react";
 
-// Define the types for the data structure
 interface Showdown {
-  id: number;
+  id: string;
   left: string;
   right: string;
   category: string;
 }
 
 const ComparePage = () => {
-  const [showdowns, setShowdowns] = useState<Showdown[]>([]); // Define the type of showdowns
+  const [showdowns, setShowdowns] = useState<Showdown[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch showdowns data from the mock API
   useEffect(() => {
     const fetchShowdowns = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:8000/technology_showdowns"
-        ); // Mock API URL
+        const baseUrl =
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+        const response = await fetch(`${baseUrl}/showdowns`);
         const data: Showdown[] = await response.json();
-        setShowdowns(data);
+
+        const techShowdowns = data.filter((s) => s.category === "Technology");
+
+        setShowdowns(techShowdowns);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
