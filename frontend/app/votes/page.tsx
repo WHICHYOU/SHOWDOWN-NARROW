@@ -1,123 +1,34 @@
-[
-  {
-    resource: "/Users/SB/Downloads/SHOWDOWN-NARROW/frontend/app/votes/page.tsx",
-    owner: "typescript",
-    code: "2305",
-    severity: 8,
-    message:
-      "Module '\"@/components/ui/use-toast\"' has no exported member 'toast'.",
-    source: "ts",
-    startLineNumber: 5,
-    startColumn: 10,
-    endLineNumber: 5,
-    endColumn: 15,
-  },
-  {
-    resource: "/Users/SB/Downloads/SHOWDOWN-NARROW/frontend/app/votes/page.tsx",
-    owner: "typescript",
-    code: "7006",
-    severity: 8,
-    message: "Parameter 'id' implicitly has an 'any' type.",
-    source: "ts",
-    startLineNumber: 17,
-    startColumn: 23,
-    endLineNumber: 17,
-    endColumn: 25,
-  },
-  {
-    resource: "/Users/SB/Downloads/SHOWDOWN-NARROW/frontend/app/votes/page.tsx",
-    owner: "typescript",
-    code: "7006",
-    severity: 8,
-    message: "Parameter 'field' implicitly has an 'any' type.",
-    source: "ts",
-    startLineNumber: 17,
-    startColumn: 27,
-    endLineNumber: 17,
-    endColumn: 32,
-  },
-  {
-    resource: "/Users/SB/Downloads/SHOWDOWN-NARROW/frontend/app/votes/page.tsx",
-    owner: "typescript",
-    code: "7006",
-    severity: 8,
-    message: "Parameter 'tags' implicitly has an 'any' type.",
-    source: "ts",
-    startLineNumber: 17,
-    startColumn: 34,
-    endLineNumber: 17,
-    endColumn: 38,
-  },
-  {
-    resource: "/Users/SB/Downloads/SHOWDOWN-NARROW/frontend/app/votes/page.tsx",
-    owner: "typescript",
-    code: "2339",
-    severity: 8,
-    message: "Property 'left' does not exist on type 'never'.",
-    source: "ts",
-    startLineNumber: 32,
-    startColumn: 21,
-    endLineNumber: 32,
-    endColumn: 25,
-  },
-  {
-    resource: "/Users/SB/Downloads/SHOWDOWN-NARROW/frontend/app/votes/page.tsx",
-    owner: "typescript",
-    code: "2339",
-    severity: 8,
-    message: "Property 'right' does not exist on type 'never'.",
-    source: "ts",
-    startLineNumber: 32,
-    startColumn: 36,
-    endLineNumber: 32,
-    endColumn: 41,
-  },
-  {
-    resource: "/Users/SB/Downloads/SHOWDOWN-NARROW/frontend/app/votes/page.tsx",
-    owner: "typescript",
-    code: "2339",
-    severity: 8,
-    message: "Property 'tags_winner' does not exist on type 'never'.",
-    source: "ts",
-    startLineNumber: 37,
-    startColumn: 34,
-    endLineNumber: 37,
-    endColumn: 45,
-  },
-  {
-    resource: "/Users/SB/Downloads/SHOWDOWN-NARROW/frontend/app/votes/page.tsx",
-    owner: "typescript",
-    code: "2339",
-    severity: 8,
-    message: "Property 'showdown_id' does not exist on type 'never'.",
-    source: "ts",
-    startLineNumber: 39,
-    startColumn: 27,
-    endLineNumber: 39,
-    endColumn: 38,
-  },
-  {
-    resource: "/Users/SB/Downloads/SHOWDOWN-NARROW/frontend/app/votes/page.tsx",
-    owner: "typescript",
-    code: "2339",
-    severity: 8,
-    message: "Property 'tags_loser' does not exist on type 'never'.",
-    source: "ts",
-    startLineNumber: 44,
-    startColumn: 34,
-    endLineNumber: 44,
-    endColumn: 44,
-  },
-  {
-    resource: "/Users/SB/Downloads/SHOWDOWN-NARROW/frontend/app/votes/page.tsx",
-    owner: "typescript",
-    code: "2339",
-    severity: 8,
-    message: "Property 'showdown_id' does not exist on type 'never'.",
-    source: "ts",
-    startLineNumber: 46,
-    startColumn: 27,
-    endLineNumber: 46,
-    endColumn: 38,
-  },
-];
+"use client";
+import React, { useEffect, useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
+
+// Define the type of a vote item
+interface VoteItem {
+  id: number;
+  choice: string;
+}
+
+const VoteHistoryPage = () => {
+  const { toast } = useToast();
+  const [votes, setVotes] = useState<VoteItem[]>([]); // 👈 Add type here
+
+  useEffect(() => {
+    // Simulate vote fetch
+    setVotes([{ id: 1, choice: "Mac > Windows" }]);
+  }, []);
+
+  return (
+    <div className="p-6">
+      <h1 className="text-xl font-bold mb-4">Your Vote History</h1>
+      <ul>
+        {votes.map((v) => (
+          <li key={v.id} className="text-sm">
+            {v.choice}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default VoteHistoryPage;

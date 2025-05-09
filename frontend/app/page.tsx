@@ -1,16 +1,13 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+"use client";
+import React from "react";
 
-export default function Home() {
+const LandingPage = () => {
   return (
-    <div className="flex justify-center items-center h-screen">
-      <Card className="max-w-md w-full text-center">
-        <CardHeader><CardTitle>Welcome to Showdown</CardTitle></CardHeader>
-        <CardContent>
-          <p className="mb-4">Make choices. Discover your preferences.</p>
-          <Button asChild><a href="/taste-match">Start</a></Button>
-        </CardContent>
-      </Card>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold">Welcome to Yoister</h1>
+      <p className="text-muted-foreground mt-2">You are what you choose.</p>
     </div>
-  )
-}
+  );
+};
+
+export default LandingPage;
