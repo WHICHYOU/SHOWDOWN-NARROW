@@ -1,46 +1,55 @@
-'use client'
-import React, { useState } from "react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+"use client";
+import React, { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
-interface CompareResult {
-  match_percentage: number
-  shared?: string[]
-  different?: string[]
-}
+type CompareResult = {
+  match_percentage: number;
+  shared: string[];
+  different: string[];
+};
 
-export default function Compare() {
-  const [a, setA] = useState("")
-  const [b, setB] = useState("")
-  const [res, setRes] = useState<CompareResult | null>(null)
+export default function ComparePage() {
+  const [userA, setUserA] = useState("");
+  const [userB, setUserB] = useState("");
+  const [result, setResult] = useState<CompareResult | null>(null);
 
   const compare = async () => {
-    const r = await fetch(`/compare/${a}/${b}`)
-    const d = await r.json()
-    setRes(d)
-  }
+    const res = await fetch(`/compare/${userA}/${userB}`);
+    const data = await res.json();
+    setResult(data);
+  };
 
   return (
     <div className="max-w-xl mx-auto p-6">
       <Card>
-        <CardHeader><CardTitle>Compare Friends</CardTitle></CardHeader>
-        <CardContent className="space-y-2">
-          <Input placeholder="Username A" value={a} onChange={e => setA(e.target.value)} />
-          <Input placeholder="Username B" value={b} onChange={e => setB(e.target.value)} />
+        <CardHeader>
+          <CardTitle>Compare Friends</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Input
+            placeholder="Username A"
+            value={userA}
+            onChange={(e) => setUserA(e.target.value)}
+          />
+          <Input
+            placeholder="Username B"
+            value={userB}
+            onChange={(e) => setUserB(e.target.value)}
+          />
           <Button onClick={compare}>Compare</Button>
+          {result && (
+            <div className="space-y-2 mt-4 text-sm">
+              <p>
+                Match: <strong>{result.match_percentage}%</strong>
+              </p>
+              <p>Shared: {result.shared.join(", ")}</p>
+              <p>Different: {result.different.join(", ")}</p>
+            </div>
+          )}
         </CardContent>
       </Card>
-      {res && (
-        <Card className="mt-4">
-          <CardHeader><CardTitle>Result</CardTitle></CardHeader>
-          <CardContent>
-            <p>Match: {res.match_percentage}%</p>
-            <p>Shared: {res.shared?.join(", ")}</p>
-            <p>Different: {res.different?.join(", ")}</p>
-          </CardContent>
-        </Card>
-      )}
     </div>
-  )
+  );
 }

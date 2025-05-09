@@ -1,34 +1,27 @@
-/*
- 🔹 /summary — Tag Summary Page
- ✅ Purpose: Show user’s most common tags
- ✅ UI: Badge grid
- ✅ Intent: “What words describe your choices?”
-*/
-
 'use client'
-import { useEffect, useState } from "react"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
-export default function SummaryTags() {
-  const [tags, setTags] = useState<string[]>([])
+export default function SummaryPage() {
+  const [copied, setCopied] = useState(false)
+  const shareText = "I chose 🐱 over 🐶, 🍜 over 🍕, Nike over Adidas. Who are you? → yoister.com"
 
-  useEffect(() => {
-    const id = localStorage.getItem("user_id")
-    if (!id) return
-    fetch(`/users/${id}/top-tags`)
-      .then(res => res.json())
-      .then(setTags)
-  }, [])
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(shareText)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
+    <div className="max-w-xl mx-auto p-6">
       <Card>
-        <CardHeader><CardTitle>Your Most Used Tags</CardTitle></CardHeader>
-        <CardContent className="flex gap-2 flex-wrap">
-          {tags.map((tag, i) => (
-            <Badge key={i}>{tag}</Badge>
-          ))}
+        <CardHeader><CardTitle>Summary</CardTitle></CardHeader>
+        <CardContent>
+          <p className="text-sm mb-4">{shareText}</p>
+          <Button onClick={copyToClipboard}>
+            {copied ? "✅ Copied!" : "📋 Copy for Social"}
+          </Button>
         </CardContent>
       </Card>
     </div>
