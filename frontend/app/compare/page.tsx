@@ -18,9 +18,9 @@ const ComparePage = () => {
         const baseUrl =
           process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
         const response = await fetch(`${baseUrl}/showdowns`);
-        const data: Showdown[] = await response.json();
+        const { showdowns } = await response.json(); // ✅ fix here
 
-        setShowdowns(data.slice(0, 10)); // ✅ No category filtering
+        setShowdowns(showdowns.slice(0, 10)); // ✅ use extracted array
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
