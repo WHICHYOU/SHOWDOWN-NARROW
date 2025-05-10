@@ -21,9 +21,9 @@ const VoteHistoryPage = () => {
         const baseUrl =
           process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
         const response = await fetch(`${baseUrl}/showdowns`);
-        const data: Showdown[] = await response.json();
+        const { showdowns } = await response.json(); // ✅ unpack properly
 
-        const recentVotes = data.slice(0, 5); // ✅ No category filtering
+        const recentVotes = showdowns.slice(0, 5); // ✅ no category filtering
         setVotes(recentVotes);
 
         toast({

@@ -20,10 +20,9 @@ export default function MatchScores() {
         const baseUrl =
           process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
         const response = await fetch(`${baseUrl}/showdowns`);
-        const data: Showdown[] = await response.json();
+        const { showdowns } = await response.json(); // ✅ unpack correctly
 
-        const sampleMatches = data.slice(0, 10); // ✅ Preview mode: no category filtering
-        setMatches(sampleMatches);
+        setMatches(showdowns.slice(0, 10));
       } catch (err) {
         console.error("Match fetch error:", err);
       } finally {
