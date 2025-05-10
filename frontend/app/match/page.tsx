@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 interface Showdown {
-  id: string;
+  id?: string;
   left: string;
   right: string;
-  category: string;
+  category?: string;
 }
 
 export default function MatchScores() {
@@ -22,18 +22,8 @@ export default function MatchScores() {
         const response = await fetch(`${baseUrl}/showdowns`);
         const data: Showdown[] = await response.json();
 
-        const validCategories = [
-          "Technology",
-          "Food Beverage",
-          "Entertainment",
-          "Fashion Lifestyle",
-          "Travel Adventure",
-        ];
-
-        const filtered = data.filter((d) =>
-          validCategories.includes(d.category)
-        );
-        setMatches(filtered);
+        const sampleMatches = data.slice(0, 10); // ✅ Preview mode: no category filtering
+        setMatches(sampleMatches);
       } catch (err) {
         console.error("Match fetch error:", err);
       } finally {
@@ -48,20 +38,19 @@ export default function MatchScores() {
     <div className="max-w-2xl mx-auto p-6 space-y-4">
       <Card>
         <CardHeader>
-          <CardTitle>Top Taste Matches</CardTitle>
+          <CardTitle>Top Showdown Matches</CardTitle>
         </CardHeader>
         <CardContent>
           {loading ? (
             <p>Loading...</p>
+          ) : matches.length === 0 ? (
+            <p>No showdowns available.</p>
           ) : (
             <ul className="space-y-2">
               {matches.map((item, idx) => (
                 <li key={`${item.left}-${item.right}-${idx}`}>
                   <span className="font-semibold">{item.left}</span> vs{" "}
-                  <span className="font-semibold">{item.right}</span> —{" "}
-                  <span className="text-sm text-muted-foreground">
-                    {item.category}
-                  </span>
+                  <span className="font-semibold">{item.right}</span>
                 </li>
               ))}
             </ul>

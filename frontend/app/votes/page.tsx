@@ -4,10 +4,10 @@ import React, { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 
 interface Showdown {
-  id: string;
+  id?: string;
   left: string;
   right: string;
-  category: string;
+  category?: string;
 }
 
 const VoteHistoryPage = () => {
@@ -23,15 +23,12 @@ const VoteHistoryPage = () => {
         const response = await fetch(`${baseUrl}/showdowns`);
         const data: Showdown[] = await response.json();
 
-        const techVotes = data
-          .filter((v) => v.category === "Technology")
-          .slice(0, 5);
-
-        setVotes(techVotes);
+        const recentVotes = data.slice(0, 5); // ✅ No category filtering
+        setVotes(recentVotes);
 
         toast({
           title: "Vote history loaded",
-          description: `Showing ${techVotes.length} recent Technology showdowns.`,
+          description: `Showing ${recentVotes.length} recent showdowns.`,
         });
       } catch (error) {
         console.error("Failed to fetch votes", error);
@@ -52,15 +49,14 @@ const VoteHistoryPage = () => {
       <h1 className="text-xl font-bold mb-4">Your Vote History</h1>
       {loading ? (
         <p>Loading...</p>
+      ) : votes.length === 0 ? (
+        <p>No recent votes found. Try voting first.</p>
       ) : (
         <ul className="space-y-2">
           {votes.map((v, idx) => (
             <li key={`${v.left}-${v.right}-${idx}`}>
               <span className="font-medium">{v.left}</span> &gt;{" "}
-              <span className="font-medium">{v.right}</span>{" "}
-              <span className="text-sm text-muted-foreground">
-                ({v.category})
-              </span>
+              <span className="font-medium">{v.right}</span>
             </li>
           ))}
         </ul>

@@ -2,10 +2,10 @@
 import React, { useEffect, useState } from "react";
 
 interface Showdown {
-  id: string;
+  id?: string;
   left: string;
   right: string;
-  category: string;
+  category?: string;
 }
 
 const ComparePage = () => {
@@ -20,7 +20,7 @@ const ComparePage = () => {
         const response = await fetch(`${baseUrl}/showdowns`);
         const data: Showdown[] = await response.json();
 
-        setShowdowns(data.filter((s) => s.category === "Technology"));
+        setShowdowns(data.slice(0, 10)); // ✅ No category filtering
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -48,9 +48,6 @@ const ComparePage = () => {
               <h2 className="font-semibold">
                 {showdown.left} vs {showdown.right}
               </h2>
-              <p className="text-sm text-muted-foreground">
-                {showdown.category || "General"}
-              </p>
             </div>
           ))}
         </div>
