@@ -18,9 +18,16 @@ const ComparePage = () => {
         const baseUrl =
           process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
         const response = await fetch(`${baseUrl}/showdowns`);
-        const { showdowns } = await response.json(); // ✅ fix here
+        if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+        const data = await response.json();
 
-        setShowdowns(showdowns.slice(0, 10)); // ✅ use extracted array
+        const showdownList = Array.isArray(data.showdowns)
+          ? data.showdowns
+          : Array.isArray(data)
+          ? data
+          : [];
+
+        setShowdowns(showdownList.slice(0, 10));
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -57,16 +64,3 @@ const ComparePage = () => {
 };
 
 export default ComparePage;
-
-// 'use client';
-// import React from 'react';
-
-// const ComparePage = () => {
-//   return (
-//     <div className="p-6">
-//       <h1 className="text-xl font-bold">Compare Profiles</h1>
-//     </div>
-//   );
-// };
-
-// export default ComparePage;
